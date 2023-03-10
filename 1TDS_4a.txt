@@ -1,6 +1,4 @@
-AULA 01 - 08/02/2023
-
-Introdução a linguagem SQL ORACLE
+Introdução a linguagem SQL
 DDL - Linguagem de definição de dados - Estrutura
 Criando tabelas
 Sintaxe:
@@ -95,11 +93,14 @@ cargo_fk references cargo)
 
 Criação das tabelas: n_fiscal e produto
 
+15/02/2023
+
 create table n_fiscal
 (n_nf number(5) primary key,
 dt_nf date not null,
 total_nf number(10,2));
 
+desc n_fiscal
 select constraint_name from user_constraints where table_name = 'N_FISCAL'
 
 desc n_fiscal
@@ -116,15 +117,8 @@ create table tem
 (fk_nota number(5) constraint tem_nf_fk references n_fiscal,
 fk_prod number(5) constraint tem_prod_fk references produto)
 
-
-
-AULA 02 - 15/02/2023
-
-
 Inserindo dados
 Comando DML - Data Manipulation Language
-
-
 Novas linhas:
 insert into nome_tabela values
 (valor1, valor2,...., valorN)
@@ -144,11 +138,7 @@ select sysdate from dual
 gravando dados fisicamente
 commit;
 
-
-
-
-
-AULA 03 - 01/03/2023
+Aula 03 - 01/03/2023
 
 Ainda trabalhando com estrutura das tabelas
 
@@ -157,10 +147,9 @@ DDL
 Create - Ok
 
 Alterando ou corrigindo uma estrutura
-alter table nome_tabela opções
-
-opções:
-add column    - nova coluna
+alter table nome_tabela
+opções
+add column      - nova coluna
 add constraint  - nova regra
 modify          - modifica tipo e/ou tamanho de uma coluna
 drop column     - elimina uma coluna
@@ -176,30 +165,26 @@ incluindo uma coluna com regra
 alter table tb_teste add cep char(8) not null
 incluindo a pk na coluna codigo
 alter table tb_teste add constraint pk_cod primary key (codigo)
-modificando apenas o tipo de dados 
+modificando apenas o tipo de dados
 alter table tb_teste modify nome varchar(10)
-modificando apenas o tamanho da coluna 
+modificando apenas o tamanho da coluna
 alter table tb_teste modify nome varchar(50)
-modificando tamanho e tipo ao mesmo tempo 
+modificando tamanho e tipo ao mesmo tempo
 alter table tb_teste modify nome number(10)
 eliminando uma regra
-alter table tb_teste drop constraint pk_codigo
+alter table tb_teste drop constraint pk_cod
 desc tb_teste
 desc user_constraints
-select constraint_name from user_constraints where 
-
+select constraint_name from user_constraints where table_name = 'TB_TESTE'
 eliminando uma coluna
 alter table tb_teste drop column nome
 renomeando uma coluna
 alter table tb_teste rename column codigo to cod_cliente
 renomeando uma constraint
 alter table tb_teste rename constraint sys_c003509437 to fiap
-
 eliminando uma tabela
 drop table nome_tabela
 drop table tb_teste
-
-select * from funcionario
 
 create table tb_teste1
 (codigo number(1) primary key)
@@ -210,35 +195,34 @@ insert into tb_teste2 values(1)
 drop table tb_teste1 cascade constraints
 uso do cascade permite eliminar o relacionamento e depois dropar a tabela
 
-Atualizando dados 
+Atualizando dados
 
-update
+Update 
 
 operadores: aritméticos: + - * / ()
             relacionais: > >= < <= = != ou <>
             lógicos: and or not
+            
+update nome_tabela set nome_coluna = novo_valor
 
 update nome_tabela set nome_coluna = novo_valor
-where condição 
+where condição
 
 
+create table produto_tb 
+(cod_prod number(4) constraint prod_cod_pk primary key, 
+unidade varchar2(3),descricao varchar2(20),val_unit number(10,2))
 
-create table produto1_tb 
-(cod_prod1 number(4) constraint prod_cod_pk1 primary key, 
-unidade1 varchar2(3),descricao1 varchar2(20),val_unit number(10,2));
-
- 
-
-insert into produto_tb values (25,'KG','Queijo',0.97);
-insert into produto_tb values (31,'BAR','Chocolate',0.87);
-insert into produto_tb values (78,'L','Vinho',2.00);
-insert into produto_tb values (22,'M','Linho',0.11);
-insert into produto_tb values (30,'SAC','Acucar',0.30);
-insert into produto_tb values (53,'M','Linha',1.80);
-insert into produto_tb values (13,'G','Ouro',6.18);
-insert into produto_tb values (45,'M','Madeira',0.25);
-insert into produto_tb values (87,'M','Cano',1.97);
-insert into produto_tb values (77,'M','Papel',1.05);
+insert into produto_tb values ('25','KG','Queijo','0.97');
+insert into produto_tb values ('31','BAR','Chocolate','0.87');
+insert into produto_tb values ('78','L','Vinho','2.00');
+insert into produto_tb values ('22','M','Linho','0.11');
+insert into produto_tb values ('30','SAC','Acucar','0.30');
+insert into produto_tb values ('53','M','Linha','1.80');
+insert into produto_tb values ('13','G','Ouro','6.18');
+insert into produto_tb values ('45','M','Madeira','0.25');
+insert into produto_tb values ('87','M','Cano','1.97');
+insert into produto_tb values ('77','M','Papel','1.05');
 commit;
 
 select * from produto_tb
@@ -257,14 +241,3 @@ atualizar o nome do produto queijo para queijo de minas.
 para os produtos Açucar, madeira e Linha zerar o seu preço.
 
 desc produto_tb
-
-
-
-
-
-
-
-
-
-
-

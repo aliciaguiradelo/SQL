@@ -116,6 +116,137 @@ update tb_produtos set embalagem = 'garrafa' where produto = '520380';
 /*Alterando vários ao mesmo tempo*/
 update tb_produtos set embalagem = 'vidro', nome = 'testando update', tamanho = 'deu certo' where produto = '1040107';
 
+/*Ajustando comissão dos vendedores*/
+select * from TB_VENDEDORES;
+
+update TB_VENDEDORES set percentual_comissao = 0.18 where matricula = '00400';
+update TB_VENDEDORES set percentual_comissao = 0.18 where matricula = '00414';
+update TB_VENDEDORES set percentual_comissao = 0.18 where matricula = '00233';
+
+/*Para deletar dados de uma tabela ou seja uma linha da tabela*/
+select * from tb_produtos;
+
+delete from tb_produtos where produto ='1037797';
+
+/*Deletando uma vendedora*/
+select * from TB_VENDEDORES;
+
+delete from tb_vendedores where matricula = '00400';
+
+select * from tb_produtos;
+insert into tb_produtos
+(produto, nome, embalagem, tamanho, sabor, preco_lista)
+values
+('1037797','Clean - 2 Litros - Laranja','PET','2 Litros','Melância', 14.56);
+delete from tb_produtos where produto ='1037797';                                                                                                                    
+
+/*Adicionando uma Primary Key na tabela*/
+alter table tb_produtos add constraint pk_tb_produtos primary key (produto);
+
+alter table tb_vendedores add constraint pk_tb_vendedores primary key (matricula);
+
+alter table tb_clientes add constraint pk_tb_clientes primary key (cpf);
+
+insert into tb_clientes
+(cpf, nome, endereco1, endereco2, bairro,estado,cep,data_nascimento,idade,sexo,limite_cartao,volume_compra,primeira_compra)
+values
+('43849634833','Joao da Silva','Rua um',null, 'vila roman', 'sp', '02732000', '18/02/2001', 22, 'F',10000,10000,0);  
+select * from tb_clientes;
+/*Mostra o mês da data*/
+select to_char (data_nascimento,'mm') from tb_clientes;
+
+delete from tb_clientes where cpf ='43849634833';  
+insert into tb_clientes
+(cpf, nome, endereco1, endereco2, bairro,estado,cep,data_nascimento,idade,sexo,limite_cartao,volume_compra,primeira_compra)
+values
+('43849634833','Joao da Silva','Rua um',null, 'vila roman', 'sp', '02732000',to_date ('10/12/2001', 'mm/dd/yyyy'), 22, 'F',10000,10000,0); 
+insert into tb_clientes
+(cpf, nome, endereco1, endereco2, bairro,estado,cep,data_nascimento,idade,sexo,limite_cartao,volume_compra,primeira_compra)
+values
+('43849631233','Joao da Silva','Rua um',null, 'vila roman', 'sp', '02732000',to_date ('10/12/2001', 'dd/mm/yyyy'), 22, 'F',10000,10000,0);
+select * from tb_clientes;
+select * from TB_VENDEDORES;
+
+INSERT INTO TB_VENDEDORES (
+     MATRICULA, NOME, DATA_ADMISSAO, PERCENTUAL_COMISSAO
+) VALUES (
+     '00265','Jonh Wayne',to_date('03/27/2019', 'mm/dd/yy'), 0.12
+);
+
+INSERT INTO TB_VENDEDORES (
+     MATRICULA, NOME, DATA_ADMISSAO, PERCENTUAL_COMISSAO
+) VALUES (
+     '00777','Katy Peterson',to_date('02/04/2020', 'mm/dd/yy'), 0.10
+);
+
+INSERT INTO TB_VENDEDORES (
+     MATRICULA, NOME, DATA_ADMISSAO, PERCENTUAL_COMISSAO
+) VALUES (
+     '00342','Rodrigo Almeida',to_date('18/01/2022', 'dd/mm/yy'), 0.09
+);
+
+INSERT INTO TB_VENDEDORES (
+     MATRICULA, NOME, DATA_ADMISSAO, PERCENTUAL_COMISSAO
+) VALUES (
+     '00729','Patricia Martins',to_date('02/01/2022', 'dd/mm/yy'), 0.09
+);
+
+/*Executar todos comandos do arquivo SQL_10.sql de uma só vez*/
+
+select produto, nome,embalagem,tamanho,sabor,preco_lista from tb_produtos;
+
+/*Os valores cadastrados vão aparecer na ordem que eu escrevi os nomes das colunas.
+Se na hora de fazer o comando select eu alterar a ordem, ele vai mostrar na ordem diferente*/
+
+select tamanho, nome,embalagem,produto,sabor,preco_lista from tb_produtos;
+
+/*Se eu quiser printar os dados da tabela e mudar o nome da coluna, basta usar 
+select (nome original da coluna) as "nome que quero que apareça"*/
+
+select produto as "codigo do produto", 
+       nome as "nome do produto", 
+       embalagem as "embalagem do produto",
+       produto,sabor,preco_lista from tb_produtos;
+
+/*FILTROS DE BUSCA DE DADOS COM WHERE*/
+/*Caso eu queira trazer só uma parte da tabela e não todos os dados*/
+
+select * from tb_produtos where sabor = 'Melancia';
+
+select * from tb_produtos where sabor = 'Limao';
+
+update tb_produtos set sabor = 'Citrico' where sabor='Limao';
+
+select * from tb_produtos where sabor = 'Citrico';
+
+select * from tb_clientes;
+
+/*Buscas específicas com o select + where*/
+select * from tb_clientes where idade > 22;
+
+select * from tb_clientes where idade = 22;
+
+select * from tb_clientes where idade < 22;
+
+select * from tb_clientes where idade <> 22; /* <> símbolo de diferente*/
+
+/*Select específico para ver clientes que vem dps do Marcelo Mattos em de acordo com a ordem alfabética*/
+select * from tb_clientes where nome > 'Marcelo Mattos'; 
+
+select * from tb_clientes where nome <> 'Marcelo Mattos';
+
+select * from tb_produtos where preco_lista > 16 ;
+
+select * from tb_vendedores where PERCENTUAL_COMISSAO < 0.17;
+
+/*Filtro de busca com datas*/
+select * from tb_clientes where data_nascimento = to_date ('25/03/1992', 'dd/mm/yyy');
+
+select * from tb_clientes;
+
+
+
+
 
 
 
