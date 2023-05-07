@@ -534,27 +534,25 @@ insert into vendedor values(250,'Mauricio','2930','B');
 
 commit;
 
-commit;
+insert into produto values (25,'KG','Queijo',0.97);
 
-insert into produto values ('25','KG','Queijo','0.97');
+insert into produto values (31,'BAR','Chocolate',0.87);
 
-insert into produto values ('31','BAR','Chocolate','0.87');
+insert into produto values (78,'L','Vinho',2.00);
 
-insert into produto values ('78','L','Vinho','2.00');
+insert into produto values (22,'M','Linho',0.11);
 
-insert into produto values ('22','M','Linho','0.11');
+insert into produto values (30,'SAC','Acucar',0.30);
 
-insert into produto values ('30','SAC','Acucar','0.30');
+insert into produto values (53,'M','Linha',1.80);
 
-insert into produto values ('53','M','Linha','1.80');
+insert into produto values (13,'G','Ouro',6.18);
 
-insert into produto values ('13','G','Ouro','6.18');
+insert into produto values (45,'M','Madeira',0.25);
 
-insert into produto values ('45','M','Madeira','0.25');
+insert into produto values (87,'M','Cano',1.97);
 
-insert into produto values ('87','M','Cano','1.97');
-
-insert into produto values ('77','M','Papel','1.05');
+insert into produto values (77,'M','Papel',1.05);
 
 commit;
 
@@ -631,7 +629,7 @@ insert into item_pedido values ('143','78','10');
 commit;
 
 
-Aula 8 - 21/04/2023
+Aula 8 - 12/04/2023
 
 Construindo relatórios, comandos - DQL
 Data Query Language
@@ -783,6 +781,118 @@ and upper(nome_clie) like '%S%';
 '%a'   - procura os dados que terminam com 'a' (a minúsculo)
 '_a%'  - procura dados onde a segunda letra é 'a' (a minúsculo)
 '__a%' - procura dados onde a terceira letra é 'a' (a minúsculo)
+
+
+Aula 10 03/05/2023 - funções
+
+Quantos produtos existem na tabela produto?
+select count(*) from produto;
+
+Quantos clientes existem na tabela cliente?
+select count(*), count(cep) from cliente;
+--vamos obter dois valores diferentes porque um cliente não cadastrou o cep porque não é not null, por isso
+--temos que dar preferência de usar o count com a chave primária da tabela
+select count (cod_clie) from cliente;
+
+Cálculo da média dos valores em colunas
+avg(coluna)
+
+Qual é a média salarial dos vendedores?
+select round(avg(salario_fixo),2) from vendedor;
+Round - arredondamento, 1a posição após o limite >= 5, + 1 a esquerda
+Trunc - despreza casas decimais, sem arredondamento
+
+select salario_fixo/1.3, round(salario_fixo/1.3,2),
+trunc(salario_fixo/1.3,2) from vendedor;
+
+maior valor na coluna
+max(coluna)
+Qual é o maior salário cadastrado na tabela vendedor?
+select max(salario_fixo) from vendedor;
+select salario_fixo from vendedor order by 1 desc;
+--Para letras, ele procura a maior primeira letra letra, ou seja, vai trazer
+--Susana por que começa com S
+
+Menor valor da coluna
+min(coluna)
+Qual é o menor salário cadastrado na tabela vendedor?
+select min(salario_fixo) from vendedor;
+select salario_fixo from vendedor order by 1
+
+Crie um relatório que mostre o maior e o menor preço existente na tabela produto
+select min(preco_prod) from produto;
+select max(val_unit) "Maior preço" from produto;
+
+Crie um relatório que mostre quantos clientes moram em São Paulo
+select count (cod_clie) "Total de clientes em SP" from cliente where uf='SP';
+--prova dos 9 select uf from cliente where uf = 'SP';
+
+Crie um relatório que exiba a quantidade de pedidos do cliente 148
+--SEMPRE QUE TIVER QUANTIDADE VAI TER QUE USAR COUNT
+select count(num_pedido) "Total de pedidos" from pedido where cod_clie = 720;
+
+Qual é a média salarial dos vendedores de comissão A?
+select avg(salario_fixo) from vendedor where comissao='A';
+
+Qual é o custa da folha de pagamento dos vendedores de comissão C?
+select sum(salario_fixo) from vendedor where comissao='C';
+
+
+SUBQUERIE OU SUBCONSULTA
+Exiba o nome e salário do vendedor que tem o maior salário cadastrado na tabela vendedor.
+--select nome_ven, max(salario_fixo) "Maior salário"  from vendedor (ERRADO)
+--Se eu fizer dessa forma vai dar erro, porque as funções (sum, avg, max, min, count) retornam apenas UM valor em UMA linha
+--e esse nome_ven vai retornar 14 linhas de nomes de clientes diferentes
+--Ou seja, está misturando uma função simples com uma complexa
+
+solução em duas partes
+1 - seleção que exibe a saída de dados
+select nome_ven, salario_fixo from vendedor;
+2 - filtro de exibição
+select max(salario_fixo) from vendedor;
+3 - juntar as instruções é uma SUBQUERRY
+--retorna uma linha
+select nome_ven, salario_fixo from vendedor where salario_fixo in (select max(salario_fixo) from vendedor);
+--retorna várias linhas
+select nome_ven, max(salario_fixo) "Maior salário"  from vendedor group by nome_ven order by 2 desc;
+
+Exiba o nome do vendedor e seu salário desde que ele ganhe acima da média
+select nome_ven, salario_fixo from vendedor where salario_fixo > (select avg(salario_fixo) from vendedor);
+
+
+Funções de grupo - analisam linhas e retornam um resultado apenas
+group by - agrupamento
+
+Quantos clientes existem por UF?
+select uf, count(cod_clie) from cliente group by uf order by 1
+
+Quantos vendedores existem por comissão?
+select comissao, count(cod_ven) from vendedor group by comissao order by 1
+select * from vendedor
+
+Quantos pedidos cada cliente possui?
+select cod_clie, count(num_pedido) from pedido group by cod_clie order by 2;
+
+Quantos produtos existem por pedido?
+select num_pedido, count(cod_prod) from item_pedido group by num_pedido order by 1;
+
+Quais clientes possuem mais de 1 pedido?
+Condição usada encima da função count
+having condição
+select cod_clie, count(num_pedido) from pedido group by cod_clie having count(num_pedido) > 1 order by 1;
+
+
+Aula 11 - Junções
+
+
+
+
+
+
+
+
+
+
 
 
 
