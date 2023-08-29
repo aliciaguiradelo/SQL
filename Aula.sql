@@ -731,6 +731,16 @@ select * from vendedor where salario_fixo > 2000;
 select * from vendedor where salario_fixo > 2000 and comissao != 'B';
 => select * from vendedor where salario_fixo > 2000 and comissao != 'B' and cod_ven > 500 and cod_ven < 800;
 
+5.8) quem são os vendedores com salário superior a R$2.000,00, que pertençam a 
+     comissão A ou C e que seu código esteja no intervalo de 500 até 800
+    select * from vendedor where salario_fixo > 2000;
+    select * from vendedor where salario_fixo > 2000 and
+    comissao != 'B';
+    select * from vendedor where salario_fixo > 2000 and
+    comissao != 'B' and cod_ven > 500 and cod_ven < 800;
+    select * from vendedor where salario_fixo > 2000 and
+    (comissao = 'A' or comissao = 'C') and cod_ven > 500 and cod_ven < 800;
+    
 Operadores de BD:
     between (intervalo sequencial)-> coluna1 between valor inicial and valor final
     exemplo:
@@ -776,6 +786,9 @@ Nomes com as letras 'a' e 's'
 select nome_clie from cliente where upper(nome_clie) like '%A%'
 and upper(nome_clie) like '%S%';
 
+
+
+
 '%ks%' - procura o 'ks' em todas as posições do meio de uma palavra
 'A%'   - procura os dados que começam com 'A' (a maiúsculo)
 '%a'   - procura os dados que terminam com 'a' (a minúsculo)
@@ -783,9 +796,16 @@ and upper(nome_clie) like '%S%';
 '__a%' - procura dados onde a terceira letra é 'a' (a minúsculo)
 
 
-Aula 10 03/05/2023 - funções
+Aula 10 03/05/2023 - Funções Numéricas Simples
+
+contador de linhas
+Count(coluna) ou count(*)
 
 Quantos produtos existem na tabela produto?
+select count(*) from produto;
+
+Quantos clientes existem por estado?
+select uf from cliente order by 1
 select count(*) from produto;
 
 Quantos clientes existem na tabela cliente?
@@ -793,6 +813,11 @@ select count(*), count(cep) from cliente;
 --vamos obter dois valores diferentes porque um cliente não cadastrou o cep porque não é not null, por isso
 --temos que dar preferência de usar o count com a chave primária da tabela
 select count (cod_clie) from cliente;
+
+Somatória de valores em colunas
+sum(coluna)
+Qual o custo da folha de pagamento?
+select sum(salario_fixo) from vendedor;
 
 Cálculo da média dos valores em colunas
 avg(coluna)
@@ -881,25 +906,127 @@ Condição usada encima da função count
 having condição
 select cod_clie, count(num_pedido) from pedido group by cod_clie having count(num_pedido) > 1 order by 1;
 
+Crie um relatório que mostre o maior e o menor preço existente na tabela produto
+select max(val_unit) "Maior Preço", min(val_unit) "Menor Preço"
+from produto;
+Crie um relatório que mostre quantos clientes moram em São Paulo.
+select count(cod_clie) "Total de clientes em SP"
+from cliente where uf = 'SP';
+select uf from cliente where uf = 'SP';
+Crie um relatório que exiba a quantidade de pedidos do cliente 720.
+select count(num_pedido) "Total de pedidos" from pedido
+where cod_clie = 720;
+Qual a média salarial dos vendedore de comissão A?
+select avg(salario_fixo) from vendedor where comissao = 'A';
+Qual é o custo da folha de pagamento dos vendedores de comissão C?
+select sum(salario_fixo) from vendedor where comissao = 'C';
 
-Aula 11 - Junções
+Subquerie ou Subconsulta
+Exiba o nome e salário do vendedor que tem o maior salário cadastrado na tabela
+vendedor.
+select nome_ven, max(salario_fixo) from vendedor;
+solução em duas partes
+1 - seleção que exibe a saída de dados
+select nome_ven, salario_fixo from vendedor;
+2 - filtro de exibição
+select max(salario_fixo) from vendedor;
+3 - Juntar as instruções
+select nome_ven, salario_fixo from vendedor
+where salario_fixo in (select max(salario_fixo) from vendedor);
+
+Exiba o nome do vendedor e seu salário, desde que ele ganhe acima da média.
+1 - seleção que exibe a saída de dados
+2 - filtro de exibição
+3 - Juntar as instruções
+select nome_ven, salario_fixo from vendedor
+where salario_fixo > (select avg(salario_fixo) from vendedor);
 
 
 
+Funções de Grupo - analisam linhas e retornam um resultado apenas
+group by - agrupamento
 
+Quantos clientes existem por UF?
+select uf, count(cod_clie) from cliente group by uf order by 1
+Quantos vendedores existem por comissão?
+select comissao, count(cod_ven) from vendedor group by comissao;
+Quantos pedidos cada cliente possui?
+select cod_clie, count(num_pedido) from pedido group by cod_clie
+order by 1;
+select * from pedido where cod_clie = 260;
+Quantos produtos existem por pedido?
+select num_pedido, count(cod_prod) from item_pedido
+group by num_pedido order by 1;
 
+Quais clientes possuem mais de 1 pedido?
+Condição usada na função count
+having condição
+select cod_clie, count(num_pedido) from pedido group by cod_clie
+having count(num_pedido) > 1;
+order by 1;
 
+Aula 12 - Funções data
 
+data do sistema - sysdate
 
+Exibindo a data do sistema - vendo o padrão atual
+Select sysdate from dual;
 
+select * from vendedor;
 
+Criar as colunas dt_adm e dt_dem na tablea vendedor e incluir a data
+de hoje nelas
+alter table vendedor add dt_adm date default sysdate;
+alter table vendedor add dt_dem date default sysdate;
+--default sysdate significa inserir a data do sistema na criação da coluna
 
+select * from vendedor;
 
+processamento com as datas
 
+data + número = data
+data - número = data
+data - data = número
 
+Select sysdate, sysdate +400, sysdate - 400 from dual;
 
+Subtrair 3580 dias da data de admissão dos vendedores de comissão A
+Subtrair 6580 dias da data de admissão dos vendedores de comissão B
+Subtrair 13580 dias da data de admissão dos vendedores de comissão C
 
+update vendedor set dt_adm=dt_adm - 3580  where comissao = 'A';
+update vendedor set dt_adm=dt_adm - 6580 where comissao = 'B';
+update vendedor set dt_adm=dt_adm - 13580  where comissao = 'C';
 
+commit;
+
+Subtrair 18 dias da data de demissão do vendedor Felipe
+Apagar o conteúdo da coluna data de demissão dos vendedores de código: 101 a 310
+(inclusive)
+Subtrair 67 dias da data de admissão do vendedor João de código 11
+
+update vendedor set dt_dem=dt_dem - 18 where nome_ven = 'Felipe';
+update vendedor set dt_dem = null where cod_ven between 101 and 310;
+
+--inner significa a equivalencia entre duas tabelas 
+
+desc cargo
+desc funcionario
+
+create table cargo (cd_cargo number(2) primary key,
+                    nm_cargo varchar(30),
+                    salario number(8,2));
+select * from cargo;
+
+create table funcionario (
+id_fun number(2) primary key,
+nm_fun varchar(20),
+cargo_fk references cargo
+);
+
+drop table funcionario cascade constraint
+
+select * from funcionario
 
 
 
