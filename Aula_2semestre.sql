@@ -1,18 +1,31 @@
 AULA 01 (07/08) - Introdução blocos anônimos
 
 1o comando a ser executado é um comando de ambiente
-Habilitando a saída de dados de um bloco pl (não quero imprimir em pdf, que ver na tela, por exemplo)
 
+--Habilitando a saída de dados de um bloco pl (não quero imprimir em pdf, que ver na tela, por exemplo)
+set serveroutput on
+--preparação do ambiente para saída de dados
 set serveroutput on
 
-1o programa
+A) Estrutura
+Declare - opcional
+begin - obrigatória
+exception - opcional
+end; obrigatória
 
+1o programa
+--exemplo 1
 begin
     dbms_output.put_line('Bloco Ok!');
 end;
+--exemplo 2
+begin
+    dbms_output.put_line(12+45);
+end;
 
-Trabalhando com variáveis
 
+B) Trabalhando com variáveis
+--exemplo 3 com variáveis
 declare
     --quando vamos atribuir um valor de número para uma variável, é opcional usar aspas duplas ou simples
     v1 number(2) := 10;
@@ -20,9 +33,9 @@ declare
     re number(3);
 begin
     re := v1 + v2;
-    dbms_output.put_line(re);
+    dbms_output.put_line('Resultado: '||re);
 end;
-
+--exemplo 4 refatorando o anterior
 declare
     v1 number(2) := 10;
     v2 number(2) := 10;
@@ -31,15 +44,28 @@ begin
     dbms_output.put_line('resultado: '||re);
 end;
 
-Entrada de dados via teclado
+C) Usando herança
+declare 
+--declarando variaveis
+    n1 number(2) := 10;
+    n2 n1%type := 10;
+    re n1%type := n1 + n2;
+--inicio do prg
+begin
+--saida de dados
+    dbms_output.put_line('Resultado: '||re);
+--finalizando
+end;
+
+D) Entrada de dados via teclado
 
 declare
 --declaração de vm (variável de memória)
 -- uso de variáveis de substituição
     v1 number(2) := &Valor_1;
-    v2 number(2) := &Valor_2;
+    v2 v1%type := &Valor_2;
 --processamento
-    re number(3) := v1 + v2;
+    re v1%type := v1 + v2;
 begin
 --saída de dados
     dbms_output.put_line('resultado: '||re);
@@ -60,6 +86,17 @@ begin
     dbms_output.put_line('Salário mínimo - R$1320,00');
     dbms_output.put_line('Acréscimo de 25%');
     dbms_output.put_line('Novo salário R$ '||1320*1.25||',00');
+end;
+
+declare
+    sal_atual number(8,2) := 1320;
+    
+--iniciando programa
+begin
+--exibindo resultado
+dbms_output.put_line('* 25% de acréscimo no mínimo');
+dbms_output.put_line('R$ :'||sal_atual * 1.25);
+--finalizando programa
 end;
 
 --Exercício 02
@@ -133,9 +170,10 @@ end;
 --correção05
 
 
-Aula 02 - 14/08/2023
---A herança é em tipo e3 tamanho
+Aula 02 - 14/08/2023 - Breve revisão blocos anônimos
+--A herança é feita em tipo de variável e tamanho
 set  verify off
+set serveroutput on
 
 --Estrutura de decisão
 if - then - elsif - else - end if
@@ -208,7 +246,311 @@ begin
 end;
 
 
+Aula 03 - 21/08/2023
+
+CP1 - 04/09/2023 - estrutura de decisão
+                    carga de dados - bloco tabela
+                    carga de dados - tabela bloco
+
+set serveroutput on
+--Serve para visualizar os dados
+
+set verify off
+--Serve para mostrar o resultado direto
+
+desc produto;
+
+drop table produto cascade constraints;
+
+create table TB_ALUNO3 (
+ra char(9),
+nome varchar2(50),
+constraint aluno_pk primary key (ra));
+
+insert into TB_ALUNO3 (ra,nome) values ('111222333','Antonio Aves');
+insert into TB_ALUNO3 (ra,nome) values ('444555666','Clara Aves');
+insert into TB_ALUNO3 (ra,nome) values ('777888999','Fernanda Aves');
+
+begin
+    insert into TB_ALUNO3 (ra,nome) values ('123123123','Antonio Aves');
+    insert into TB_ALUNO3 (ra,nome) values ('456456456','Clara Aves');
+    insert into TB_ALUNO3 (ra,nome) values ('789789789','Fernanda Aves');
+
+end;
 
 
+declare
+    v_ra char(9) := '123123123';
+    v_nome varchar2(50);
+begin
+    select nome into v_nome from TB_ALUNO3 where ra=v_ra;
+    dbms_output.put_line ('O nome do aluno é:' || v_nome);
+end;
 
 
+declare
+    v_ra char(9) := '789452365';
+    v_nome varchar2(50):= 'Daniela Dorneles';
+begin
+    insert into TB_ALUNO3(ra,nome) values (v_ra,v_nome);
+end;
+
+SELECT * FROM TB_ALUNO3
+
+
+declare
+    v_ra char(9) := '111222333';
+    v_nome varchar2(50) := 'Arthur Foschiani';
+begin
+    update TB_ALUNO3 set nome=v_nome where ra=v_ra;
+end;
+
+declare
+    v_ra char(9) := '777888999';
+begin
+    delete from TB_ALUNO3 where ra=v_ra;
+end;
+
+
+create table tb_produto3(
+id_pro number(3) primary key,
+ds_pro varchar2(30)not null unique,
+pr_pro number(8,2) not null,
+qtd_pro number(8,2) not null);
+
+
+begin
+    insert into tb_produto3 values (1, 'Pneu', 350.56, 100);
+    insert into tb_produto3 values (2, 'Multimidia', 2380.6, 5);
+    insert into tb_produto3 values (3, 'Chaveiro', 12.4, 150);
+    commit;
+end;
+
+declare
+    v_opcao varchar2(1) := '&Opcao1vender2comprar';
+    v_idpro number(3) := &cd_produto;
+    v_compra number(10,2) := &qtd_compra;
+    v_dspro  varchar2(30);
+    v_prpro  number(10,2);
+    v_total  number(12,2);
+    v_qtdpro number(10,2);
+begin
+    select ds_pro, pr_pro, qtd_pro into v_dspro, v_prpro, v_qtdpro
+    from tb_produto3 where id_pro = v_idpro;
+    v_total := v_compra * v_prpro;
+    
+    if v_opcao = '1' then
+        update tb_produto3 set qtd_pro = qtd_pro + v_compra
+        where id_pro = v_idpro;
+        
+        dbms_output.put_line('Descrição do produto: '||v_dspro);
+        dbms_output.put_line('Preço do produto: '||v_prpro);
+        dbms_output.put_line('Qtd comprada: '||v_compra);
+        dbms_output.put_line('Total da compra - R$: '||v_total);
+    
+    elsif v_opcao = '2' then
+        if v_compra <= v_qtdpro then
+            update tb_produto3 set qtd_pro = qtd_pro - v_compra
+            where id_pro = v_idpro;
+            
+            dbms_output.put_line('Descrição do produto: '||v_dspro);
+            dbms_output.put_line('Preço do produto: '||v_prpro);
+            dbms_output.put_line('Qtd comprada: '||v_compra);
+            dbms_output.put_line('Total da compra - R$: '||v_total);
+        else
+            dbms_output.put_line('Não há saldo suficiente em estoque');
+        end if;
+        
+    else
+        dbms_output.put_line('Opção inválida');
+    end if;
+end;
+
+
+Aula 04 - 28/08/2023 - Estrutura de repetição
+
+set serveroutput on
+set verify off
+
+ESTRUTURA DE REPETIÇÃO => LOOP
+
+Declare
+    v_contador number(2):=1;
+Begin
+    LOOP
+        dbms_output.put_line(v_contador);
+        v_contador := v_contador + 1;
+        exit when v_contador > 20;
+    END LOOP;
+end;
+
+WHILE
+
+declare
+    v_contador number(2):=1
+
+FOR
+
+--estrutura
+
+for <contador> in <valor inicial> .. <valor final>
+loop
+    <instruções>
+end loop;
+
+--exemplo
+
+Begin 
+    for v_contador in 1..20 loop
+        dbms_output.put_line(v_contador);
+    end loop;
+end;
+
+Begin 
+    for v_contador in reverse 1..20 loop
+        dbms_output.put_line(v_contador);
+    end loop;
+end;
+
+--tabuada
+declare 
+    v_tabu number(3) := &tabuada;
+    v_cont number(2) := 0;
+begin
+    loop
+        dbms_output.put_line(v_tabu||' X '||v_cont||' = '||(v_tabu * v_cont));
+        v_cont := v_cont + 1;
+        exit when v_cont > 10;
+    end loop;
+end;
+
+declare 
+    v_tabu number(3) := &tabuada;
+    v_cont number(2) := 0;
+begin
+    while v_cont <= 10 loop
+        dbms_output.put_line(v_tabu||' X '||v_cont||' = '||(v_tabu * v_cont));
+        v_cont := v_cont + 1;
+    end loop;
+end;
+
+declare
+    v_tabu number(3) := &tabuada;
+begin
+    for v_cont in 0..10 loop
+        dbms_output.put_line(v_tabu||' X '||v_cont||' = '||(v_tabu * v_cont));
+    end loop;
+end;
+
+--exercício 02
+declare
+    v_menor number(3) := &menor;
+    v_maior v_menor%type := &maior;
+    v_par v_menor%type := 0;
+    v_impar v_menor%type := 0;
+begin
+    for v_conta in v_inicio..v_fim loop
+        if mod(v_conta,2) = 0 then
+            v_par := v_par + 1;
+        else
+            v_impar := v_impar + 1;
+        end if;
+    end loop;
+dbms_output.put_line('Total par(es): '|| v_par);
+dbms_output.put_line('Total impar(es): '|| v_impar);
+end;
+    
+
+declare
+    v_menor number(3) := &menor;
+    v_maior v_menor%type := &maior;
+    v_par v_menor%type := 0;
+    v_impar v_menor%type := 0;
+begin
+    for v_conta in v_inicio..v_fim loop
+        if mod(v_conta,2) = 0 then
+            v_par := v_par + 1;
+        else
+            v_impar := v_impar + 1;
+        end if;
+    end loop;
+dbms_output.put_line('Total par(es): '|| v_par);
+dbms_output.put_line('Total impar(es): '|| v_impar);
+end
+    
+    
+    
+REVISÃO
+Declare - opcional
+begin - obrigatória
+exception - opcional
+end; obrigatória
+
+v1 number(2) := &Valor_1;
+v2 v1%type := &Valor_2;
+
+If – then - elsif – then – else – end if
+IF <condição> THEN
+<instruções>;
+ELSIF <condição> THEN
+<instruções>;
+ELSE
+<instruções>;
+END IF;
+    
+--select    
+DECLARE
+V_RA CHAR(9) := '333444555';
+V_NOME VARCHAR2(50);
+BEGIN
+SELECT NOME INTO V_NOME FROM ALUNO WHERE RA = V_RA;
+DBMS_OUTPUT.PUT_LINE ('O nome do aluno é: ' || V_NOME);
+END;    
+--insert
+DECLARE
+V_RA CHAR(9) := ‘444555666’;
+V_NOME VARCHAR2(50) := ‘Daniela Dorneles’;
+BEGIN
+INSERT INTO ALUNO (RA,NOME) VALUES (V_RA,V_NOME);
+END;
+--update
+DECLARE
+V_RA CHAR(9) := ‘111222333’;
+V_NOME VARCHAR2(50) := ‘Antonio Rodrigues’;
+BEGIN
+UPDATE ALUNO SET NOME = V_NOME WHERE RA = V_RA;
+END;
+--delete
+DECLARE
+V_RA CHAR(9) := ‘444555666’;
+BEGIN
+DELETE FROM ALUNO WHERE RA = V_RA;
+END;
+
+--loop
+Loop
+< instrução(ões) >
+Exit when < condição >
+End loop;
+--while
+WHILE < condição> LOOP
+< instrução(ões) >;
+END LOOP;
+--for
+FOR < contador> IN <valor inicial> .. <valor final>
+LOOP
+< instrução (ões) >;
+END LOOP;
+BEGIN
+FOR V_CONTADOR IN 1..20 LOOP
+DBMS_OUTPUT.PUT_LINE(V_CONTADOR);
+END LOOP;
+END;
+--for reverse
+Estrutura de repetição: for - reverse
+BEGIN
+FOR V_CONTADOR IN REVERSE 1..20 LOOP
+DBMS_OUTPUT.PUT_LINE(V_CONTADOR);
+END LOOP;
+END;
+    
