@@ -2,10 +2,8 @@ AULA 01 (07/08) - Introdução blocos anônimos
 
 1o comando a ser executado é um comando de ambiente
 
---Habilitando a saída de dados de um bloco pl (não quero imprimir em pdf, que ver na tela, por exemplo)
 set serveroutput on
---preparação do ambiente para saída de dados
-set serveroutput on
+set verify off
 
 A) Estrutura
 Declare - opcional
@@ -554,3 +552,90 @@ DBMS_OUTPUT.PUT_LINE(V_CONTADOR);
 END LOOP;
 END;
     
+    
+AULA 06 - 11/09/2023 - Cursores
+
+--teoria
+
+
+--exercício 01
+create table tb_func(
+cd_fun number(5),
+nm_fun varchar(30),
+salario number (8,2),
+dt_adm date);
+
+insert into tb_func values (1, 'Marcel', 1000,  TO_DATE('2000-04-17', 'YYYY-MM-DD'));
+insert into tb_func values (2, 'Claudia', 1600,  TO_DATE('1998-10-02', 'YYYY-MM-DD'));
+insert into tb_func values (3, 'Joaquim', 5500,  TO_DATE('2010-07-10', 'YYYY-MM-DD'));
+insert into tb_func values (4, 'Valeria', 7300,  TO_DATE('2015-06-08', 'YYYY-MM-DD'));
+
+--exercício 02
+
+declare
+    v_id number(5) := &IdFunc;
+    v_nome VARCHAR2(30);
+    v_salario number (8,2);
+begin
+    select nm_fun, salario into v_nome, v_salario from tb_func where cd_fun = v_id;
+    dbms_output.put_line('NOME: '||v_nome||' SALARIO: '|| v_salario);
+end;
+
+declare
+    cursor c_exibe is select nm_fun, salario from tb_func;
+    v_exibe c_exibe%rowtype;
+begin
+    open c_exibe;
+    loop
+        fetch c_exibe into v_exibe;
+    exit when c_exibe%notfound;
+    dbms_output.put_line('NOME: '||v_exibe.nm_fun||' SALARIO: '|| v_exibe.salario);
+    end loop;
+    close c_exibe;
+end;
+    
+declare
+    cursor c_exibe is select nm_fun, salario from tb_func;
+begin
+    for v_exibe in c_exibe loop
+        dbms_output.put_line('NOME: '||v_exibe.nm_fun||' SALARIO: '|| v_exibe.salario);
+    end loop;
+end;
+    
+
+--exercício 03
+ALTER TABLE tb_func ADD tempo NUMBER;
+
+DECLARE
+    CURSOR c_exibe IS
+        SELECT * FROM tb_func;
+BEGIN
+    FOR v_exibe IN c_exibe LOOP
+        update tb_func set tempo = sysdate - v_exibe.dt_adm where cd_fun = v_exibe.cd_fun;
+    END LOOP;
+END;
+
+--exercício 04
+DECLARE
+    CURSOR c_exibe IS
+        SELECT * FROM tb_func;
+BEGIN
+    FOR v_exibe IN c_exibe LOOP
+        IF v_exibe.tempo >= 150 THEN
+            -- Atualiza o salário multiplicando por 1.1
+            UPDATE tb_func
+            SET salario = salario * 1.1
+            WHERE CURRENT OF c_exibe;
+        END IF;
+        dbms_output.put_line('NOME: '||v_exibe.nm_fun||' SALARIO: '|| v_exibe.salario, ' TEMPO: '|| v_exibe.tempo);
+    END LOOP;
+END;
+
+
+
+
+
+
+
+
+
