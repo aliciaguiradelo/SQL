@@ -570,6 +570,8 @@ insert into tb_func values (2, 'Claudia', 1600,  TO_DATE('1998-10-02', 'YYYY-MM-
 insert into tb_func values (3, 'Joaquim', 5500,  TO_DATE('2010-07-10', 'YYYY-MM-DD'));
 insert into tb_func values (4, 'Valeria', 7300,  TO_DATE('2015-06-08', 'YYYY-MM-DD'));
 
+select * from tb_func
+
 --exercício 02
 
 declare
@@ -630,6 +632,31 @@ BEGIN
         dbms_output.put_line('NOME: '||v_exibe.nm_fun||' SALARIO: '|| v_exibe.salario, ' TEMPO: '|| v_exibe.tempo);
     END LOOP;
 END;
+
+--exercício 05
+DECLARE
+    CURSOR c_exibe IS
+        SELECT * FROM tb_func;
+    n_meses number(5);
+BEGIN
+    FOR v_exibe IN c_exibe LOOP
+    select months_between(sysdate, dt_adm) into n_meses from tb_func
+    where cd_fun = v_exibe.cd_fun;
+    if n_meses >= 150 then
+    update tb_func set salario = salario * 1.1 where cd_fun = v_exibe.cd_fun; 
+    else
+    update tb_func set salario = salario * 1.05 where cd_fun = v_exibe.cd_fun;
+    end if;
+    end loop;
+end;
+    
+
+
+AULA 07 - 18/09/2023 - Cursores
+
+CHECKPOINT 02 - 09/10/2023
+
+
 
 
 
