@@ -656,13 +656,111 @@ AULA 07 - 18/09/2023 - Cursores
 
 CHECKPOINT 02 - 09/10/2023
 
+Aula 10 - 25/09/2023 - Exceções
+
+Exception - tratamento de erros - pré definida
+
+declare
+    ...
+begin
+    ...
+    exception
+        when nome_da_acao then relacao_de_comandos;
+        when nome_da_acao then relacao_de_comandos;
+        when nome_da_acao then relacao_de_comandos;
+end;
 
 
+--Professor disponibilizou uma tabela com os nomes dos possíveis erros
 
+drop table aluno cascade constraints;
+create table aluno (ra number(1) primary key, nome varchar(20));
 
+insert into aluno values (1, 'Marcel');
+insert into aluno values (2, 'Alicia');
+insert into aluno values (3, 'Larah');
+commit;
 
+select * from aluno;
 
+--bloco de código sem tratamento de exceções
+begin
+    insert into aluno values (1,'Marcel');
+end;
 
+--bloco com tratamento de exceção
+begin
+    insert into aluno values (1,'Marcel');
+    exception
+    when dup_val_on_index then dbms_output.put_line('Operação inválida');
+end;
+
+declare 
+    v_ra aluno.ra%type := 1;
+    v_nome aluno.nome%type; 
+begin
+    --ra > v_ra
+    --se for menor, não tem nenhum registro
+    --se for maior, tem dois registros
+    select nome into v_nome from aluno where ra > v_ra;
+    dbms_output.put_line(v_ra||' - '|| v_nome);
+    exception
+        when no_data_found then
+            dbms_output.put_line ('Não há nenhum aluno com este RA');
+        when too_many_rows then
+            dbms_output.put_line ('Há mais de um aluno com este RA');
+end;
+
+declare 
+    v_ra aluno.ra%type := 9;
+    v_nome aluno.nome%type; 
+begin
+    select nome into v_nome from aluno where ra > v_ra;
+    dbms_output.put_line(v_ra||' - '|| v_nome);
+    exception
+        /*when no_data_found then
+            dbms_output.put_line ('Não há nenhum aluno com este RA');
+        when too_many_rows then
+            dbms_output.put_line ('Há mais de um aluno com este RA');*/
+            
+        when others then
+            dbms_output.put_line ('Sei de nada preguiçoso');
+end;
+
+declare
+    v_conta number(2);
+    turma_cheia exception;
+begin
+    select count(ra) into v_conta from aluno;
+    if v_conta = 5  then
+        raise turma_cheia;
+    else
+        insert into aluno values (7, 'neymar jr');
+    end if;
+    exception
+    when turma_cheia then
+        dbms_output.put_line('Não foi possível incluir: turma cheia');
+end;
+
+Criar as tabelas: Cliente, ContaCorrente, Movimentação para gerenciar as operações de uma CC,
+deverão existir dois tipos de CC, as básicas que não permitem saques maiores que o saldo e as especiais
+que permitirão estes saques em até 50% do saldo naquele momento do saque.
+Vc deverá:
+Criar as tabelas para funcionamento do processo - movimentação de CC
+Criar os blocos de programação:
+- um para cadastro do cliente, sua conta.
+- um para cadastro da movimentação, créditos - C e débitos - D, sempre exibir o saldo após a movimentação.
+- um para saque, alertando se é possível ou não realizar o mesmo e exibir o saldo no momento.
+* não esqueça das exceptions
+
+drop table cliente cascade constraints;
+create table cliente (id number(1) primary key, nome varchar(20), conta numebr(5));
+
+drop table contacorrente cascade constraints;
+create table contacorrente (id number(1) primary key, nome varchar(20));
+
+drop table movimentacao cascade constraints;
+create table movimentacao (ra number(1) primary key, nome varchar(20));
 
 
 
