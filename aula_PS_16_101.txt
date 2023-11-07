@@ -1,0 +1,631 @@
+08/07/2023
+
+Aula 1 - Blocos anônimos
+         Introdução a programação
+         
+Estrutura
+Declare - opcional
+begin - obrigatória
+exception - opcional
+end; obrigatória
+
+-- comentário
+
+ativando a saída de dados
+1o comando a ser executado
+
+set serveroutput on
+
+begin
+    dbms_output.put_line('Bloco Ok!!!!');
+end;
+
+begin
+    dbms_output.put_line(12+45);
+end;
+
+usando vm
+
+declare 
+--declarando variaveis
+    n1 number(2) := 10;
+    n2 number(2) := 10;
+    re number(2);
+--inicio do prg
+begin
+--processamento
+    re := n1 + n2;
+--saida de dados
+    dbms_output.put_line('Resultado: '||re);
+--finalizando
+end;
+
+declare 
+--declarando variaveis
+    n1 number(2) := 10;
+    n2 number(2) := 10;
+    re number(2) := n1 + n2;
+--inicio do prg
+begin
+--saida de dados
+    dbms_output.put_line('Resultado: '||re);
+--finalizando
+end;
+
+--usando herança
+declare 
+--declarando variaveis
+    n1 number(2) := 10;
+    n2 n1%type := 10;
+    re n1%type := n1 + n2;
+--inicio do prg
+begin
+--saida de dados
+    dbms_output.put_line('Resultado: '||re);
+--finalizando
+end;
+
+--entrada de dados via teclado
+declare 
+--declarando variaveis
+    n1 number(2) := &valor1;
+    n2 n1%type := &valor2;
+    re n1%type := n1 + n2;
+--inicio do prg
+begin
+--saida de dados
+    dbms_output.put_line('Resultado: '||re);
+--finalizando
+end;
+
+14/08/2023
+
+Aula 2 - Breve revisão blocos anônimos
+
+Estrutura de decisão
+
+Criar um bloco PL-SQL para calcular o valor do novo salário mínimo 
+que deverá ser de 25% em cima do atual, que é de R$ ?????.
+
+preparação do ambiente para saída de dados
+set serveroutput on
+
+--area das vms
+declare
+    sal_atual number(8,2) := 1320;
+    
+--iniciando programa
+begin
+--exibindo resultado
+dbms_output.put_line('* 25% de acréscimo no mínimo');
+dbms_output.put_line('R$ :'||sal_atual * 1.25);
+--finalizando programa
+end;
+
+Criar um bloco PL-SQL para calcular o valor em REAIS de 45 dólares, 
+sendo que o valor do câmbio a ser considerado é de R$????.
+
+declare
+    v_dolar number(10,2) := 45;
+    v_real   v_dolar%type;
+    v_cambio v_dolar%type := 4.96;
+begin   
+    v_real := v_dolar * v_cambio;
+    dbms_output.put_line('R$: '||v_real');
+end;
+
+21/08/2023
+
+CP1 - 04/09 - Individual ou em dupla
+
+Aula 3 - estrutura de decisão
+         carga de dados - bloco tabela
+         carga de dados - tabela bloco
+         
+drop table aluno cascade constraints;
+create table aluno ( ra char(9) primary key,
+                     nome varchar(50));
+desc aluno;
+delete from aluno;
+
+begin
+INSERT INTO ALUNO (RA,NOME) VALUES ('111222333','Antonio Alves');
+INSERT INTO ALUNO (RA,NOME) VALUES ('222333444','Beatriz Bernardes'); 
+INSERT INTO ALUNO (RA,NOME) VALUES ('333444555','Cláudio Cardoso');
+end;
+
+select * from aluno;
+
+28/08/2023
+
+CP1 - 04/09 - Individual ou em dupla
+
+Aula 4 - Estrutura de repetição
+
+set serveroutput on
+set verify off
+
+DECLARE 
+	V_CONTADOR NUMBER(2):= 1; 
+BEGIN 
+LOOP 	
+	DBMS_OUTPUT.PUT_LINE(V_CONTADOR); 
+    --contador e acumulador
+	V_CONTADOR := V_CONTADOR + 1; 
+	EXIT WHEN V_CONTADOR > 20; 
+END LOOP; 
+END;
+
+declare
+    v_conta number(3) := 0;
+    v_valor number(3) := &tabuada;
+begin
+    loop
+        dbms_output.put_line(v_conta||' X '||v_valor||' = '||(v_conta * v_valor));
+        v_conta := v_conta + 1;
+        exit when v_conta > 10;
+    end loop;
+end;
+
+
+declare
+    v_conta number(3) := 0;
+    v_valor number(3) := &tabuada;
+begin
+    while v_conta <= 10 loop
+        dbms_output.put_line(v_conta||' X '||v_valor||' = '||(v_conta * v_valor));
+        v_conta := v_conta + 1;
+    end loop;
+end;
+
+declare
+    v_valor number(3) := &tabuada;
+begin
+    for v_conta in 1..10 loop
+        dbms_output.put_line(v_conta||' X '||v_valor||' = '||(v_conta * v_valor));
+    end loop;
+end;
+         
+declare
+    v_inicio number(3) := &inicio;
+    v_fim v_inicio%type := &fim;
+    v_par v_inicio%type := 0;
+    v_impar v_inicio%type := 0;
+    begin
+        for v_conta in v_inicio..v_fim loop
+            if mod(v_conta,2)= 0 then
+                v_par := v_par + 1;
+            else
+                v_impar := v_impar + 1;
+            end if;
+        end loop;
+    dbms_output.put_line('Total de pares: '||v_par);
+    dbms_output.put_line('Total de ímpares: '||v_impar);
+end;
+
+Aula 5 - 04/09/2023
+CP1
+
+Aula 6 - 11/09/2023
+Cp2 - 02/10/2023
+
+Cursores
+
+drop table funcionario cascade constraints;
+create table funcionario (cd_fun number(2) primary key,
+                          nm_fun varchar2(20),  salario number(10,2),
+                          dt_adm date);
+begin
+insert into funcionario values (1, 'Marcel', 10000, '17-apr-2000');
+    insert into funcionario values (2, 'Claudia', 16000, '02-oct-1998');
+    insert into funcionario values (3, 'Joaquim', 5500, '10-jul-2010');
+    insert into funcionario values (4, 'Valéria', 7300, '08-jun-2015');
+commit;
+end;
+
+set serveroutput on
+
+declare
+    cursor c_exibe is select nm_fun, salario from funcionario;
+    v_exibe c_exibe%rowtype;
+begin
+    open c_exibe;
+    loop
+        fetch c_exibe into v_exibe;
+    exit when c_exibe%notfound;
+    dbms_output.put_line('Nome: '||v_exibe.nm_fun||' - Salário: '||v_exibe.salario);
+    end loop;
+    close c_exibe;
+end;
+
+Aula 7 - 18/09/2023
+Cp2    - 09/10/2023
+
+continuando cursores
+
+usando for....
+
+set serveroutput on
+
+
+DECLARE
+    CURSOR C_exibe IS SELECT nm_fun, salario FROM funcionario;
+BEGIN
+    FOR V_exibe IN C_exibe LOOP
+        dbms_output.put_line('Nome: '||v_exibe.nm_fun||' - Salário: '||v_exibe.salario);
+    END LOOP;
+END;
+
+continuação exercício
+
+Incluir na tabela funcionário a coluna tempo de tipo 
+numérico, atualizar esta coluna com o tempo em dias 
+que cada funcionário está trabalhando na empresa, 
+lembrando que sysdate retorna a data do sistema
+
+alter table funcionario add tempo number(5);
+
+DECLARE
+    CURSOR C_exibe IS SELECT * FROM funcionario;
+BEGIN
+    FOR V_exibe IN C_exibe LOOP
+        update funcionario set tempo = sysdate - v_exibe.dt_adm
+        where cd_fun = v_exibe.cd_fun;
+        dbms_output.put_line('Nome: '||v_exibe.nm_fun||' - Tempo: '||v_exibe.tempo||' dias');
+    END LOOP;
+END;
+
+select * from funcionario;
+
+Para os funcionários com tempo de serviço superior ou 
+igual a 150 meses, adicionar 10% ao salário e para o 
+restante 5%
+
+DECLARE
+    CURSOR C_exibe IS SELECT * FROM funcionario;
+BEGIN
+    FOR V_exibe IN C_exibe LOOP
+        if (v_exibe.tempo / 30) >= 150 then
+            update funcionario set salario = salario * 1.1 where cd_fun = v_exibe.cd_fun;
+        else
+            update funcionario set salario = salario * 1.05 where cd_fun = v_exibe.cd_fun;
+        end if;
+        dbms_output.put_line(v_exibe.tempo / 30);
+    END LOOP;
+END;
+
+DECLARE
+    CURSOR C_exibe IS SELECT * FROM funcionario;
+    n_meses number(5);
+BEGIN
+    FOR V_exibe IN C_exibe LOOP
+        select months_between(sysdate,dt_adm) into n_meses from funcionario
+        where cd_fun = v_exibe.cd_fun;
+        if n_meses >= 150 then
+            update funcionario set salario = salario * 1.1 where cd_fun = v_exibe.cd_fun;
+        else
+            update funcionario set salario = salario * 1.05 where cd_fun = v_exibe.cd_fun;
+        end if;
+       -- dbms_output.put_line(n_meses);
+    END LOOP;
+END;
+
+Aula 8 - 25/09/2023
+Cp2    - 09/10/2023
+
+Exceptions
+
+Exception - tratamento de erros - pré definida
+
+DECLARE
+	...
+BEGIN	
+	...
+	EXCEPTION
+		WHEN NOME_DA_EXCEÇÃO THEN
+		RELAÇÃO_DE_COMANDOS;
+		WHEN NOME_DA_EXCEÇÃO THEN
+		RELAÇÃO_DE_COMANDOS;
+		...
+END;
+
+begin
+
+
+
+
+Exemplo
+
+drop table aluno cascade constraints;
+create table aluno (ra number(1), nome varchar(20));
+
+insert into aluno values (1,'Marcel');
+insert into aluno values (2,'Adriana');
+insert into aluno values (3,'Samuel');
+commit;
+
+select * from aluno;
+
+set serveroutput on
+
+begin
+    insert into aluno values (1,'Marcel');
+    exception
+    when dup_val_on_index then
+    dbms_output.put_line('Operação inválida');
+end;
+
+delete from aluno;
+
+alter table aluno add primary key (ra);
+
+
+
+DECLARE
+	V_RA ALUNO.RA%TYPE := 9;
+	V_NOME ALUNO.NOME%TYPE;
+BEGIN
+	SELECT NOME INTO V_NOME FROM ALUNO WHERE RA = V_RA;
+	DBMS_OUTPUT.PUT_LINE(V_RA ||' - '|| V_NOME);
+	EXCEPTION
+        WHEN others THEN
+			DBMS_OUTPUT.PUT_LINE ('Não sei o tá acontecendo');
+	/*	WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE ('Não há nenhum aluno com este RA');
+		WHEN TOO_MANY_ROWS THEN
+			DBMS_OUTPUT.PUT_LINE ('Há mais de um aluno com este RA'); */
+END;
+
+Personalizada
+
+DECLARE
+	NOME_DA_EXCEÇÃO EXCEPTION;
+BEGIN
+	...
+	IF ... THEN
+		RAISE NOME_DA_EXCEÇÃO;
+	END IF;
+	...
+	EXCEPTION
+		WHEN NOME_DA_EXCEÇÃO THEN
+		RELAÇÃO_DE_COMANDOS
+END;
+
+select * from aluno;
+
+DECLARE
+	V_CONTA NUMBER(2);
+	TURMA_CHEIA EXCEPTION;
+BEGIN
+	SELECT COUNT(RA) INTO V_CONTA FROM ALUNO;
+	IF V_CONTA = 5 THEN 
+		RAISE TURMA_CHEIA;
+	ELSE 
+		INSERT INTO ALUNO VALUES (6,'Rodolfo S.');
+	END IF;
+	EXCEPTION
+	WHEN TURMA_CHEIA THEN
+		DBMS_OUTPUT.PUT_LINE('Não foi possível incluir: turma cheia');
+END;
+
+Exercício:
+
+Criar as tabelas: Cliente, ContaCorrente, Movimentação para gerenciar as operações de 
+uma CC, deverão existir dois tipos de CC, as básicas que não permitem saques maiores que
+o saldo e as especiais que permitirão estes saques em até 50% do saldo naquele momento do
+saque. Vc deverá:
+Criar as tabelas para funcionamento do processo - movimentação de CC
+Criar os blocos de programação:
+- um para cadastro do cliente, sua conta.
+- um para cadastro da movimentação, créditos - C e débitos - D, sempre exibir o saldo 
+após a movimentação.
+- um para saque, alertando se é possível ou não realizar o mesmo e exibir o saldo no 
+momento.
+* não esqueça das exceptions
+
+Aula 9 - 02/10/2023
+Cp2    - 09/10/2023
+Conteúdo CP1 + Cursores + Exceptions
+
+Criando Funções
+
+Sintaxe:
+CREATE OR REPLACE FUNCTION nome_função (p1 in/out ou in/out, p2...)
+RETURN tipo_dados;
+IS
+    variaveis locais
+BEGIN
+    programação    
+ RETURN nome_função;
+END;
+
+IN (padrão): Passa um valor do ambiente chamador para procedure e este
+valor não pode ser alterado dentro dela (passagem de parâmetro por valor).
+OUT: Passa um valor da procedure para o ambiente chamador (passagem de
+parâmetro por referência).
+IN OUT: Passa um valor do ambiente chamador para a procedure. Esse valor
+pode ser alterado dentro da procedure e retornar com o valor atualizado para
+o ambiente chamador (passagem de parâmetro por referência).
+Nota: As palavras-chave IS ou AS (após a declaração dos parâmetros) podem ser
+utilizadas, pois nesse contexto são equivalentes.
+
+Chamada, passagem de parâmetros, saída de dados
+
+SELECT nome_função(valor1,valorn) FROM dual;
+
+Exemplo:
+
+CREATE OR REPLACE FUNCTION soma (p1 in number, p2 in number)
+  RETURN number
+ IS
+  total number(4);
+BEGIN
+    total := p1 + p2;
+ RETURN total;
+END;
+
+select soma(1,1) from dual;
+
+set serveroutput on;
+
+declare
+    nota1 number(3) := 10;
+    nota2 nota1%type := 10;
+    resul nota1%type;
+begin
+    resul := soma(nota1, nota2);
+    dbms_output.put_line('Resultado: '|| resul);
+end;
+    
+Objetivo: criar uma função que calcule a média
+
+drop table boletim cascade constraints;
+create table Boletim (
+Rm number(3) not null,
+Nome_Comp	varchar2(20) not null,
+C_Hora	    number(3) not null,
+Nota1	    number(4,2) not null,
+Nota2	    number(4,2) not null,
+Nota3	    number(4,2) not null,
+Media	    number(4,2),
+Faltas	    number(3) not null,
+Situacao	varchar2(40));	    --
+
+INSERT ALL
+  INTO boletim VALUES (135, 'DB Application', 200, 10, 10, 10, null, 0, null)
+  INTO boletim VALUES (135, 'IA', 180, 7.5, 7.5, 8.0, null, 170, null)
+  INTO boletim VALUES (135, 'ChatBot', 180, 1.0, 2.5, 1.5, null, 18, null)
+  INTO boletim VALUES (135, 'UX', 200, 2.5, 1.0, 1.5, null, 170, null)
+  INTO boletim VALUES (135, 'Mobile', 200, 4.0, 5.0, 4.5, null, 20, null)
+SELECT * FROM dual;
+commit;
+
+select * from boletim;
+
+CREATE OR REPLACE FUNCTION media (n1 in number, n2 in number, n3 in number)
+  RETURN number
+ IS
+  total number(4);
+BEGIN
+    total := (n1 + n2 + n3) / 3;
+ RETURN total;
+END;
+
+DECLARE
+    CURSOR C_calcula IS SELECT * FROM boletim;
+    resultado number(3,1);
+    BEGIN
+    FOR V_calcula IN C_calcula LOOP
+        resultado := media(v_calcula.nota1, v_calcula. nota2, v_calcula. nota3);
+        dbms_output.put_line(resultado);
+    END LOOP;
+END;
+
+Aula 10 - CP2 - 09/10/2023
+
+Aula 11 - 16/10/2023
+
+CP3 - 06/11/2023
+GS - 21/11 a 01/12
+DP - 21/11 a 01/12 
+Sub - 04/12 a 08/12
+
+CREATE OR REPLACE PROCEDURE nome_procedure
+(argumento1 IN | OUT |IN OUT tipo_de_dados,
+argumento2 IN | OUT |IN OUT tipo_de_dados,
+...
+argumentoN IN | OUT |IN OUT tipo_de_dados) IS | AS
+variáveis locais, constantes, ...
+BEGIN
+...
+END nome_procedure;
+
+IN (padrão): Passa um valor do ambiente chamador para procedure e este
+valor não pode ser alterado dentro dela (passagem de parâmetro por valor).
+OUT: Passa um valor da procedure para o ambiente chamador (passagem de
+parâmetro por referência).
+IN OUT: Passa um valor do ambiente chamador para a procedure. Esse valor
+pode ser alterado dentro da procedure e retornar com o valor atualizado para
+o ambiente chamador (passagem de parâmetro por referência).
+Nota: As palavras-chave IS ou AS (após a declaração dos parâmetros) podem ser
+utilizadas, pois nesse contexto são equivalentes.
+
+Exemplo:
+
+drop table aluno cascade constraints;
+create table aluno ( ra char(2) primary key,
+                     nome varchar(20));
+insert into aluno values('1','Marcel');
+insert into aluno values('2','Silmara');
+commit;
+select * from aluno;
+
+set serveroutput on
+
+CREATE OR REPLACE PROCEDURE PROC_NOME_ALUNO (P_RA IN CHAR) 
+IS
+V_NOME VARCHAR2(50);
+BEGIN
+SELECT NOME INTO V_NOME
+FROM ALUNO
+WHERE RA = P_RA;
+DBMS_OUTPUT.PUT_LINE (V_NOME);
+END PROC_NOME_ALUNO;
+
+Chamada, execução:
+EXEC PROC_NOME_ALUNO(1);
+
+Exercício:
+
+Criar um bloco de programação que permita a entrada do código do produto
+para compra, esse código deverá verificar se o produto existe através de uma
+ou mais exceções, após a validação da existÊncia do produto permitir a 
+entrada da quantidade a ser comprada, tb será necessário verificar se a 
+quantidade solicitada existe, use a lógica para isso,  para realizar a baixa 
+de estoque crie uma função que calcule esta baixa e o custo da venda, crie 
+um procedimento para mostrar em tela o código do produto, sua descrição, 
+preço unitário, quantidade comprada e o valor da venda.
+Criar uma tabela de nome produto, alimentar com 10 linhas de dados.
+
+drop table produto cascade constraints;
+create table produto (cd_prod number(3) primary key,
+                      ds_prod varchar(25) not null unique,
+                      qtd_prod number(10,2),
+                      pr_prod number(10,2) not null);
+
+begin
+    insert into produto values(1,'Pneu',100,500);
+    insert into produto values(2,'Pasta de dente',1000,12);
+    insert into produto values(3,'Capa de chuva',2,15.50);
+    commit;
+end;
+
+set verify off
+
+create or replace cal_compra (p_qtd in number)
+is
+    calcula number(10,2);
+begin
+    calcula := 
+    
+    
+declare
+    v_compra produto.qtd_prod%type := &qtd;
+    total produto.pr_prod%type;
+    v_qtd produto.qtd_prod%type;
+    v_ds produto.ds_prod%type;
+begin
+    select ds_prod, qtd_prod into v_ds, v_qtd from produto
+    where cd_prod = &codigo;
+    if v_qtd < v_compra then
+        dbms_output.put_line('Estoque indisponível');
+    else
+        dbms_output.put_line('Chama função de cálculo');
+    end if;
+    exception
+        when no_data_found then
+        dbms_output.put_line('Código inexistente');
+end;
+
+
+
