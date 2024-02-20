@@ -76,3 +76,119 @@ begin
     close c_exibe;
     
 end;
+
+
+
+-------------------------------GABARITO-------------------------------------------
+
+drop table vendedor cascade constraints
+drop table venda cascade constraints
+drop table produto cascade constraints
+drop table item_venda cascade constraints
+
+create table vendedor
+(id_vendedor number(4) primary key,
+nm_vendedor varchar(30) unique not null,
+sl_vendedor number(10,2));
+
+create table venda
+(nr_venda number(4) primary key,
+dt_venda date not null,
+tt_venda number(10,2) not null,
+fk_vendedor references vendedor not null);
+
+create table produto
+(cd_produto number(4) primary key,
+ds_produto varchar(30) not null unique,
+pr_unit number(10,2),
+estoque number(10,2));
+
+create table item_venda
+(fk_produto references produto not null,
+fk_venda references venda not null,
+qtd_produto number(10,2) not null,
+tt_item number(10,2) not null);
+
+begin
+    insert into vendedor values (&Codigo,'&Nome',&salário);
+    commit;
+    dbms_output.put_line('Dados inseridos com sucesso');
+    exception
+    when dup_val_on_index then
+    dbms_output.put_line('Codigo já cadastrado');
+    when others then
+    dbms_output.put_line('Cadastro incompleto');
+end;
+ 
+Usando updade e delete
+begin
+    update vendedor set nm_vendedor = '&nome'
+    where id_vendedor = &código;
+    commit;
+    dbms_output.put_line('Dados atualizados com sucesso');
+    exception
+    when others then
+    dbms_output.put_line('Atualização não realizada');
+end;
+begin
+    delete from vendedor
+    where id_vendedor = &código;
+    commit;
+    dbms_output.put_line('Dados atualizados com sucesso');
+    exception
+    when others then
+    dbms_output.put_line('Atualização não realizada');
+end;
+
+declare
+    v_nome varchar(30);
+    begin
+    select nm_vendedor into v_nome from venda where nr_venda = &código;
+    dbms_output.put_line('Nome do vendedor: '||v_nome);
+    exception
+    when no_data_found then
+    dbms_output.put_line('Código inexistente');
+    when too_many_rows then
+    dbms_output.put_line('Atenção pesquisa retorna mais de uma linha');
+end;
+
+select * from vendedor
+
+
+
+begin
+    insert into venda values (&Codigo,TO_DATE('&DATE', 'YYYY-MM-DD'),&total,&codvend);
+    commit;
+    dbms_output.put_line('Dados inseridos com sucesso');
+    exception
+    when dup_val_on_index then
+    dbms_output.put_line('Codigo já cadastrado');
+    when others then
+    dbms_output.put_line('Cadastro incompleto');
+end;
+
+declare
+    v_vendedor varchar(30);
+    begin
+    select fk_vendedor into v_vendedor from vendedor where nr_venda = &código;
+    dbms_output.put_line('Nome do vendedor: '||v_vendedor);
+    exception
+    when no_data_found then
+    dbms_output.put_line('Código inexistente');
+    when too_many_rows then
+    dbms_output.put_line('Atenção pesquisa retorna mais de uma linha');
+end;
+
+select * from venda
+
+DECLARE
+    CURSOR C_exibe IS select nr_venda, nm_vendedor from venda
+    inner join vendedor on id_vendedor = fk_vendedor;
+BEGIN
+FOR V_exibe IN C_exibe LOOP
+dbms_output.put_line('N venda: '||v_exibe.nr_venda||' - Nome: '||v_exibe.nm_vendedor);
+END LOOP;
+END;
+
+
+
