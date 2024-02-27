@@ -1,4 +1,4 @@
-drop table produto
+drop table produto CASCADE CONSTRAINTS
 
 create table produto(
 id_pro number(3) primary key,
@@ -189,6 +189,187 @@ FOR V_exibe IN C_exibe LOOP
 dbms_output.put_line('N venda: '||v_exibe.nr_venda||' - Nome: '||v_exibe.nm_vendedor);
 END LOOP;
 END;
+
+
+Aula 03 
+
+cp1 -> função procedure exception cursor
+
+--TEORIA
+CREATE OR REPLACE FUNCTION nome_função (p1 in/out ou in/out, p2...)
+RETURN tipo_dados;
+IS
+    variaveis locais
+BEGIN
+    programação    
+RETURN nome_função;
+END;
+ 
+IN (padrão): Passa um valor do ambiente chamador para procedure e este
+valor não pode ser alterado dentro dela (passagem de parâmetro por valor).
+OUT: Passa um valor da procedure para o ambiente chamador (passagem de
+parâmetro por referência).
+IN OUT: Passa um valor do ambiente chamador para a procedure. Esse valor
+pode ser alterado dentro da procedure e retornar com o valor atualizado para
+o ambiente chamador (passagem de parâmetro por referência).
+Nota: As palavras-chave IS ou AS (após a declaração dos parâmetros) podem ser
+utilizadas, pois nesse contexto são equivalentes.
+ 
+Chamada, passagem de parâmetros, saída de dados
+ 
+SELECT nome_função(valor1,valorn) FROM dual;
+
+
+quando usarmos IN (se eu não colocar nada vai ser o padrão IN) não permite alteração do valor. deve ser usado apenas para visualização
+OUT recebe um valor pode processar e mandar para fora também
+IN/OUT recebe e processa
+
+create or replace function nome_função (p1 in/out o in/out, p2)
+return tipo_dado;
+is 
+    VARIAVEIS LOCAIS
+begin
+    programação
+return nome_função;
+END;
+--EXEMPLO
+CREATE OR REPLACE FUNCTION soma (p1 in number, p2 in number)
+  RETURN number
+IS
+  total number(4);
+BEGIN
+    total := p1 + p2;
+RETURN total;
+END;
+
+select soma(1,1) from dual;
+
+DECLARE
+    nota1 number(3) := &Numero1;
+    nota2 nota1%type := &Numero2;
+    resul nota1%type;
+BEGIN
+    resul := soma(nota1, nota2);
+    dbms_output.put_line('Resultado: ' || resul);
+END;
+
+--EXERCÍCIOS
+
+--FUNÇÃO 01
+criar uma função que receba o valor do salário mínimo atual, atribua um aumento de 25% e exiba o novo valor.
+
+CREATE OR REPLACE FUNCTION salario_novo (p1 in number)
+  RETURN number
+IS
+  total number(14,2);
+BEGIN
+    total := p1 * 1.25;
+RETURN total;
+END;
+
+select salario_novo(2000) from dual;
+
+DECLARE
+    v_salario number(14,2) := &Salario;
+    resul v_salario%type;
+BEGIN
+    resul := salario_novo(v_salario);
+    dbms_output.put_line('Resultado: ' || resul);
+END;
+
+--FUNÇÃO 02
+declare
+    cursor c_aumenta is select * from vendedor;
+    resul number(10,2);
+begin
+    for v_aumenta in c_aumenta loop
+        resul := v_aumenta.sl_vendedor * 1.25;
+        dbms_output.put_line(v_aumenta.nm_vendedor||' - '||resul);
+        update vendedor set sl_vendedor = resul where id_vendedor = v_aumenta.id_vendedor;
+    end loop;
+end;
+
+select * from vendedor
+
+
+
+
+--Procedimento
+drop table aluno cascade constraints;
+
+create table aluno ( ra char(2) primary key,
+
+                     nome varchar(20));
+
+insert into aluno values('1','Marcel');
+
+insert into aluno values('2','Silmara');
+
+commit;
+
+select * from aluno;
+ 
+set serveroutput on
+ 
+CREATE OR REPLACE PROCEDURE PROC_NOME_ALUNO (P_RA IN CHAR) 
+
+IS
+
+V_NOME VARCHAR2(50);
+
+BEGIN
+
+SELECT NOME INTO V_NOME FROM ALUNO WHERE RA = P_RA;
+
+DBMS_OUTPUT.PUT_LINE (V_NOME);
+
+END PROC_NOME_ALUNO;
+ 
+Chamada, execução:
+
+EXEC PROC_NOME_ALUNO(1);
+
+
+--criar uma procedure que mostre os dados do produto a partir da digitação do código do mesmo.
+
+
+
+CREATE OR REPLACE PROCEDURE PROC_DADOS_PROD (P_ID IN NUMBER) IS V_descri varchar(40);
+
+BEGIN
+    SELECT ds_pro INTO V_descri FROM PRODUTO WHERE id_pro = P_ID;
+    DBMS_OUTPUT.PUT_LINE (V_descri);
+END PROC_DADOS_PROD;
+ 
+EXEC PROC_DADOS_PROD(2);
+
+SELECT * FROM PRODUTO
+
+INSERT INTO PRODUTO VALUES (1,'PRODUTO UM',100,5);
+INSERT INTO PRODUTO VALUES (2,'PRODUTO DOIS',200,0);
+INSERT INTO PRODUTO VALUES (3,'PRODUTO TRÊS',300,0);
+INSERT INTO PRODUTO VALUES (4,'PRODUTO QUATRO',4500,5);
+
+CORRETO!!!!!
+
+--crie uma proc que mostre a descrição do produto com estoque maior que 5.
+
+
+CREATE OR REPLACE PROCEDURE PROC_DADOS_PROD (P_ID IN NUMBER) IS V_descri varchar(40);
+
+BEGIN
+    SELECT ds_pro,ESTOQUE INTO V_descri, V_ESTOQUE FROM PRODUTO WHERE id_pro = P_ID;
+    IF ESTOQUE > 5 LOOP
+        DBMS_OUTPUT.PUT_LINE (V_descri);
+    END LOOP;
+END PROC_DADOS_PROD;
+ 
+EXEC PROC_DADOS_PROD(2);
+
+
+FALTA ATUALIZAR COM A CORREÇÃO!!!!
+
+
 
 
 
