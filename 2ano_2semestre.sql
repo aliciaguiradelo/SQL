@@ -526,4 +526,115 @@ UPDATE CONTA_CORRENTE SET SALDO = 10000 WHERE CODIGO = 01;
 SELECT * FROM EXTRATO;
 
 
+Aula 18/03
+
+RESUMO de gatilhos
+
+- BEFORE: Este gatilho é acionado antes que a ação que o disparou (inserção, 
+             atualização, exclusão) seja efetivamente realizada na tabela.
+   - AFTER: Este gatilho é acionado após a ação ter sido concluída na tabela. Objetivo Primário:
+   - BEFORE: Geralmente usado para validar ou modificar os dados antes que eles sejam
+             inseridos, atualizados ou excluídos.
+   - AFTER: Geralmente usado para realizar ações que dependem do resultado da ação já 
+            ter sido executada, como registro de log, notificação por e-mail ou cálculos
+            adicionais. Uso em Cenários Específicos:    - BEFORE: Útil quando é necessário garantir a integridade dos dados antes que eles
+             sejam persistidos na tabela.
+   - AFTER: Útil quando a ação a ser executada depende do registro já ter sido inserido,
+            atualizado ou excluído. Manipulação dos Dados:    - BEFORE: Permite modificar os dados que estão prestes a ser inseridos, atualizados 
+             ou excluídos.
+   - AFTER: Pode ser usado para realizar operações adicionais que não afetam diretamente
+            os dados da transação original. Eficiência e Performance:    - BEFORE: Pode melhorar o desempenho em comparação com AFTER, pois qualquer validação
+             ou modificação ocorre antes da transação real ser concluída.
+   - AFTER: Pode ser menos eficiente em termos de desempenho, especialmente se houver 
+            operações adicionais envolvidas após a transação original. Exemplo de Gatilho BEFORE: Suponha que você tenha uma tabela chamada funcionario e deseje garantir que o salário
+de um novo funcionário não seja inserido como um valor negativo. Você pode usar um 
+gatilho BEFORE INSERT para validar isso. CREATE OR REPLACE TRIGGER validar_salario
+BEFORE INSERT ON funcionarios
+FOR EACH ROW
+BEGIN
+    IF :NEW.salario < 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'O salário não pode ser um valor negativo.');
+    END IF;
+END; Neste exemplo, o gatilho BEFORE INSERT garante que o salário fornecido para um novo
+funcionário não seja negativo. Se for, ele gera um erro. Exemplo de Gatilho AFTER: Suponha que você queira manter um registro de auditoria sempre que um novo pedido for
+inserido na tabela pedidos. Você pode usar um gatilho AFTER INSERT para realizar essa ação. CREATE OR REPLACE TRIGGER registrar_auditoria_pedido
+AFTER INSERT ON pedidos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_pedidos (id_pedido, data_insercao, usuario_insercao)
+    VALUES (:NEW.id_pedido, SYSDATE, USER);
+END; Neste exemplo, o gatilho AFTER INSERT é acionado sempre que um novo pedido é inserido na
+tabela. Ele insere um registro na tabela `auditoria_pedidos`, registrando o ID do pedido,
+a data de inserção e o usuário que fez a inserção. Gatilho FOR EACH ROW
+   - Esse tipo de gatilho é usado principalmente em tabelas.
+   - Ele é acionado uma vez para cada linha afetada pela operação DML (Data Manipulation
+     Language), como INSERT, UPDATE ou DELETE.
+   - Os gatilhos FOR EACH ROW são usados para aplicar lógica de negócios em nível de linha
+     ou para validar/modificar os dados de cada linha individualmente.
+Uso
+  - Validar dados em nível de linha antes de uma inserção, atualização ou exclusão.
+  - Modificar os dados em nível de linha antes de serem persistidos na tabela.
+  - Auditoria de alterações em nível de linha (por exemplo, registro de quem alterou
+    uma determinada linha e quando).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
