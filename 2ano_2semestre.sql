@@ -607,7 +607,26 @@ Uso
     uma determinada linha e quando).
 
 
+AULA PACOTES 08/04/2024
 
+set serveroutput on
+--Serve para visualizar os dados
+ 
+set verify off
+--Serve para mostrar o resultado direto
+ 
+CREATE OR REPLACE PACKAGE teste1
+AS
+disciplina VARCHAR(20) := 'DB Application';
+unidade VARCHAR(30) := 'FIAP - Paulista _ Manhã';
+END teste1;
+ 
+DECLARE
+concatena VARCHAR(100);
+BEGIN
+concatena := teste1.disciplina || ', on FIAP';
+DBMS_OUTPUT.PUT_LINE(concatena);
+END;
 
 
 
