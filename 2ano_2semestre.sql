@@ -629,6 +629,43 @@ DBMS_OUTPUT.PUT_LINE(concatena);
 END;
 
 
+drop table emp;
+create table emp (empno number(3),
+                  sal number(8,2));
+insert into emp values (1,1000);
+
+create or replace package rh
+as 
+function descobrir_salario (p_id in emp.empno%TYPE)
+return number;
+procedure reajuste(v_codigo_emp in emp.empno%TYPE,
+                    v_porcentagem in number DEFAULT 25);
+end rh;
+
+
+create or replace package body rh
+as 
+function descobrir_salario (p_id in emp.empno%TYPE)
+return number
+is
+v_salario emp.sal%TYPE := 0;
+begin
+select sal into v_salario from emp where empno = p_id;
+return v_salario;
+end descobrir_salario;
+procedure reajuste(v_codigo_emp in emp.empno%TYPE,
+                    v_porcentagem in number DEFAULT 25)
+is
+begin
+update emp set sal = sal + (sal * (v_porcentagem/100))
+where empno = v_codigo_emp;
+COMIT;
+end reajuste;
+end rh;
+
+declare v_sal number(8,2);
+begin
+
 
 
 
