@@ -100,20 +100,28 @@ EXEC PROC_DADOS_PED(01);
 
 
 --EXERCICIO 03
+drop table controle_musica cascade constraints;
+create table controle_musica(
+id_mus number(3),
+valor_old number(8,2),
+valor_new number(8,2)
+);
+
 CREATE OR REPLACE TRIGGER gat_atualiza_val_mus
 before UPDATE
 OF valor_mus
 ON musica
 FOR EACH ROW
 BEGIN
-INSERT INTO musica
-VALUES (:OLD.id_mus, :OLD.tit_mus, :NEW.valor_mus);
+INSERT INTO controle_musica
+VALUES (:OLD.id_mus, :OLD.valor_mus, :NEW.valor_mus);
 END;
 
 SELECT * FROM pedido;
 SELECT * FROM musica;
+SELECT * FROM controle_musica;
 
-UPDATE musica SET valor_mus = 2 WHERE id_mus = 01;
+UPDATE musica SET valor_mus = 5 WHERE id_mus = 01;
 
 
 
