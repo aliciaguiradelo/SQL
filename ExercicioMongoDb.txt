@@ -1,0 +1,198 @@
+//Comandos
+//inserir 1
+db.posts.insertOne({
+    title: "Post Title 1",
+    body: "Body of post",
+    category: "News",
+    likes:1,
+    tags: ["news", "events"],
+    date: Date()
+})
+
+//è o comando SELECT * FROM do mongoDb
+db.posts.find()
+
+//inserir vários
+db.produto.insertMany([
+    { nome: "produto1", 
+      price: 100, 
+      category: "alimento"
+    },
+    { nome: "produto2", 
+      price: 90, 
+      category: "artigo esportivo"
+    },
+    { nome: "produto3", 
+      price: 70, 
+      category: "pet"
+    },
+    { nome: "produto4", 
+      price: 60, 
+      category: "construção"
+    },
+    { nome: "produto5", 
+      price: 50, 
+      category: "escolar"
+    },
+    { nome: "produto6", 
+      price: 40, 
+      category: "moda"
+    },
+    { nome: "produto7", 
+      price: 30, 
+      category: "moda infantil"
+    },
+    { nome: "produto8", 
+      price: 20, 
+      category: "moda pet"
+    },
+    { nome: "produto9", 
+      price: 10, 
+      category: "leitura"
+    },
+    { nome: "produto10", 
+      price: 100, 
+      category: "antiguidades"
+    },
+  ]);
+
+  use('MovimentacaoProduto');
+
+
+
+  db.createCollection('fornecedor');
+
+  db.createCollection('produto');
+
+  use('MovimentacaoProduto');
+  db.fornecedor.insertMany([
+    { nome: "fornecedor1", 
+      price: 100, 
+      category: "alimento"
+    },
+    { nome: "fornecedor2", 
+      price: 90, 
+      category: "artigo esportivo"
+    },
+    { nome: "fornecedor3", 
+      price: 70, 
+      category: "pet"
+    },
+    { nome: "fornecedor4", 
+      price: 60, 
+      category: "construção"
+    },
+    { nome: "fornecedor5", 
+      price: 50, 
+      category: "escolar"
+    },
+    { nome: "fornecedor6", 
+      price: 40, 
+      category: "moda"
+    },
+    { nome: "fornecedor7", 
+      price: 30, 
+      category: "moda infantil"
+    },
+    { nome: "fornecedor8", 
+      price: 20, 
+      category: "moda pet"
+    },
+    { nome: "fornecedor9", 
+      price: 10, 
+      category: "leitura"
+    },
+    { nome: "fornecedor10", 
+
+      category: "antiguidades"
+    },
+  ]);
+
+  use('MovimentacaoProduto');
+  db.fornecedor.update({nome: 'fornecedor10'},
+  {$set: {category: 'nova categoria'}})
+
+//Comandos
+//inserir 1
+db.posts.insertOne({
+    title: "Post Title 1",
+    body: "Body of post",
+    category: "News",
+    likes:1,
+    tags: ["news", "events"],
+    date: Date()
+})
+
+//è o comando SELECT * FROM do mongoDb
+db.posts.find()
+
+//inserir vários
+db.posts.insertMany([
+    { title: "Post Title 2", 
+      body: "Body 2", 
+      category: "event",
+      likes: 2,
+      tags: ["news", "events"],
+      date: Date()
+    },
+    { title: "Psot Title 3", 
+      body: "Body", 
+      category: "tech",
+      likes: 3,
+      tags: ["news", "events"],
+      date: Date()
+    },
+    { title: "Pst 4", 
+      body: "Body", 
+      category: "event",
+      likes: 4,
+      tags: ["news", "events"],
+      date: Date()
+    }
+  ]);
+
+  db.posts.update({title: "Post Title 2"},
+  {$set: {likes: 5}})
+
+  db.produto.find()
+
+  db.produto.insertOne({
+    name: "produto1",
+    price: 23
+})
+
+db.users.find()
+
+db.users.update({name: 'Alicia'},
+{$set: {age: 22}})
+
+db.users.update({name: 'Alicia'},
+{$inc: {age: 2}})
+
+db.users.find({age: {$gt: 24}})
+
+db.users.remove({name: 'Alicia'})
+
+db.produto.insertMany([
+    { name: "produto1", 
+      description: "", 
+      category: "event",
+      likes: 2,
+      tags: ["news", "events"],
+      date: Date()
+    },
+    { title: "Psot Title 3", 
+      body: "Body", 
+      category: "tech",
+      likes: 3,
+      tags: ["news", "events"],
+      date: Date()
+    },
+    { title: "Pst 4", 
+      body: "Body", 
+      category: "event",
+      likes: 4,
+      tags: ["news", "events"],
+      date: Date()
+    }
+  ]);
