@@ -1,0 +1,24 @@
+1. start mongo db service
+2. mongo db compass -> conect -> copy connectition string
+3. vscode -> install extension MongoDb -> Conect -> paste connection string
+
+db.posts.insertMany([{}])
+db.getCollection('filme').insertMany([
+    { 'item': 'pânico', 'price': 100, 'duration': 120, 'date': new Date('2014-03-01T08:00:00Z'), 'classificacao indicativa': 18 },
+    { 'item': 'sexta feira 13', 'price': 90, 'duration': 95, 'date': new Date('1980-03-01T08:00:00Z'), 'classificacao indicativa': 18 },
+    { 'item': 'massacre da serra elétrica', 'price': 75, 'duration': 100, 'director': 'i dont remember his name', 'classificacao indicativa': 16 },
+    { 'item': 'jogos mortais', 'duration': 120, 'date': new Date('2023-03-01T08:00:00Z'), 'classificacao indicativa': 18 },
+    { 'item': 'halloween', 'duration': 140,  'classificacao indicativa': 18 },
+  ]);
+
+ db.posts.insertOne({
+    title: "Post Title 1",
+    body: "Body of post",
+    category: "News",
+    likes:1,
+    tags: ["news", "events"],
+    date: Date()
+})
+
+
+db.posts.find()
