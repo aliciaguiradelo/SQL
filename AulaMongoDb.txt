@@ -2,6 +2,7 @@
 2. mongo db compass -> conect -> copy connectition string
 3. vscode -> install extension MongoDb -> Conect -> paste connection string
 
+//inserir vários
 db.posts.insertMany([{}])
 db.getCollection('filme').insertMany([
     { 'item': 'pânico', 'price': 100, 'duration': 120, 'date': new Date('2014-03-01T08:00:00Z'), 'classificacao indicativa': 18 },
@@ -11,6 +12,7 @@ db.getCollection('filme').insertMany([
     { 'item': 'halloween', 'duration': 140,  'classificacao indicativa': 18 },
   ]);
 
+inserir um
  db.posts.insertOne({
     title: "Post Title 1",
     body: "Body of post",
@@ -20,5 +22,13 @@ db.getCollection('filme').insertMany([
     date: Date()
 })
 
-
+//select
 db.posts.find()
+
+//update
+db.users.update({name: "Alicia"},
+{$set: {age: 22}})
+
+//incremento
+db.users.update({name: "Alicia"},
+{$inc: {age: 2}})
